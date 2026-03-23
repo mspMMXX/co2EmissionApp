@@ -1,0 +1,20 @@
+# Java - Spring Boot
+backend/target/
+backend/.mvn/
+*.log
+*.class
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+
+# Env
+.env
