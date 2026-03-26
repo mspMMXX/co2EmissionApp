@@ -1,121 +1,220 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useState } from "react";
+import "./App.css";
 
+/**
+ * Zentrale React-Komponente der Anwendung.
+ *
+ * Stellt die Benutzeroberfläche für:
+ * - Registrierung
+ * - Login
+ * - Suche nach Emissionsdaten
+ * - Speichern/Aktualisieren von Emissionsdaten
+ * bereit.
+ */
 function App() {
-  const [count, setCount] = useState(0)
+  // Zustände für Registrierung
+  const [registerUsername, setRegisterUsername] = useState("");
+  const [registerPassword, setRegisterPassword] = useState("");
+
+  // Zustände für Login
+  const [loginUsername, setLoginUsername] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+
+  // Zustände für Suche und Emissionsdaten
+  const [searchCountry, setSearchCountry] = useState("");
+  const [country, setCountry] = useState("");
+  const [year, setYear] = useState("");
+  const [co2Emission, setCo2Emission] = useState("");
+
+  // Statusmeldung und Ergebnisanzeige
+  const [message, setMessage] = useState("");
+  const [emissionResult, setEmissionResult] = useState(null);
+
+  /**
+   * Sendet Registrierungsdaten an das Backend
+   * und legt einen neuen Benutzer an.
+   */
+  const handleRegister = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          username: registerUsername,
+          password: registerPassword
+        })
+      });
+
+      const data = await response.json();
+      setMessage(`Registriert: ${data.username}`);
+    } catch (error) {
+      setMessage("Fehler bei der Registrierung");
+    }
+  };
+
+  /**
+   * Führt einen einfachen Login gegen das Backend aus.
+   * Das Ergebnis wird als Textmeldung angezeigt.
+   */
+  const handleLogin = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          username: loginUsername,
+          password: loginPassword
+        })
+      });
+
+      const text = await response.text();
+      setMessage(text);
+    } catch (error) {
+      setMessage("Fehler beim Login");
+    }
+  };
+
+  /**
+   * Ruft den aktuell gespeicherten Emissionsdatensatz
+   * für ein bestimmtes Land ab.
+   */
+  const handleSearch = async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/emissions/${searchCountry}`);
+      const data = await response.json();
+      setEmissionResult(data);
+      setMessage("Datensatz gefunden");
+    } catch (error) {
+      setMessage("Fehler bei der Suche");
+      setEmissionResult(null);
+    }
+  };
+
+  /**
+   * Speichert einen neuen Emissionsdatensatz oder überschreibt
+   * den bestehenden Datensatz eines Landes.
+   *
+   * Als Benutzername wird der aktuell im Login-Feld eingetragene
+   * Benutzer verwendet.
+   */
+  const handleSaveEmission = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/emissions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          country,
+          year: Number(year),
+          co2Emission: Number(co2Emission),
+          username: loginUsername
+        })
+      });
+
+      const data = await response.json();
+      setEmissionResult(data);
+      setMessage("Emissionsdaten gespeichert");
+    } catch (error) {
+      setMessage("Fehler beim Speichern");
+    }
+  };
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
+    <div className="container">
+      <h1>CO2 Emission App</h1>
+
+      <section className="card">
+        <h2>Registrierung</h2>
+        <input
+          type="text"
+          placeholder="Username"
+          value={registerUsername}
+          onChange={(e) => setRegisterUsername(e.target.value)}
+        />
+        <input
+          type="password"
+          placeholder="Passwort"
+          value={registerPassword}
+          onChange={(e) => setRegisterPassword(e.target.value)}
+        />
+        <button onClick={handleRegister}>Registrieren</button>
       </section>
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
+      <section className="card">
+        <h2>Login</h2>
+        <input
+          type="text"
+          placeholder="Username"
+          value={loginUsername}
+          onChange={(e) => setLoginUsername(e.target.value)}
+        />
+        <input
+          type="password"
+          placeholder="Passwort"
+          value={loginPassword}
+          onChange={(e) => setLoginPassword(e.target.value)}
+        />
+        <button onClick={handleLogin}>Login</button>
       </section>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      <section className="card">
+        <h2>CO2-Wert suchen</h2>
+        <input
+          type="text"
+          placeholder="Land eingeben"
+          value={searchCountry}
+          onChange={(e) => setSearchCountry(e.target.value)}
+        />
+        <button onClick={handleSearch}>Suchen</button>
+      </section>
+
+      <section className="card">
+        <h2>CO2-Wert speichern / aktualisieren</h2>
+        <input
+          type="text"
+          placeholder="Land"
+          value={country}
+          onChange={(e) => setCountry(e.target.value)}
+        />
+        <input
+          type="number"
+          placeholder="Jahr"
+          value={year}
+          onChange={(e) => setYear(e.target.value)}
+        />
+        <input
+          type="number"
+          step="0.01"
+          placeholder="CO2-Emission"
+          value={co2Emission}
+          onChange={(e) => setCo2Emission(e.target.value)}
+        />
+        <button onClick={handleSaveEmission}>Speichern</button>
+      </section>
+
+      <section className="card">
+        <h2>Status</h2>
+        <p>{message}</p>
+      </section>
+
+      {emissionResult && (
+        <section className="card">
+          <h2>Gefundener Datensatz</h2>
+          <p><strong>Land:</strong> {emissionResult.country}</p>
+          <p><strong>Jahr:</strong> {emissionResult.year}</p>
+          <p><strong>CO2-Emission:</strong> {emissionResult.co2Emission}</p>
+          {emissionResult.createdBy && (
+            <p><strong>Erstellt von:</strong> {emissionResult.createdBy.username}</p>
+          )}
+        </section>
+      )}
+    </div>
+  );
 }
 
-export default App
+export default App;

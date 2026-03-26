@@ -1,13 +1,13 @@
-### Register (optional)
-# POST http://localhost:8080/auth/register
-# Content-Type: application/json
-#
-# {
-#   "username": "markus",
-#   "password": "test123"
-# }
+### Registrierung (optional, falls User noch nicht existiert)
+POST http://localhost:8080/auth/register
+Content-Type: application/json
 
-### Login
+{
+  "username": "markus",
+  "password": "test123"
+}
+
+### Login (prüft Benutzer und Passwort)
 POST http://localhost:8080/auth/login
 Content-Type: application/json
 
@@ -16,7 +16,9 @@ Content-Type: application/json
   "password": "test123"
 }
 
-### Create / Update Emission
+### Emissionsdaten speichern oder aktualisieren
+# Wenn Land existiert → wird überschrieben
+# Wenn Land nicht existiert → neuer Datensatz
 POST http://localhost:8080/emissions
 Content-Type: application/json
 
@@ -27,5 +29,5 @@ Content-Type: application/json
   "username": "markus"
 }
 
-### Get Emission
+### Emissionsdaten abrufen (öffentlich, kein Login nötig)
 GET http://localhost:8080/emissions/Austria
