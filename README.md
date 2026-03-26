@@ -1,4 +1,4 @@
-### CO2 Emission App
+# CO2 Emission App
 
 ## Projektbeschreibung
 Die CO2 Emission App ist ein Prototyp einer Webanwendung zur Anzeige und Verwaltung von CO2-Emissionsdaten einzelner Länder.
@@ -10,27 +10,27 @@ Die Anwendung bietet:
 
 Pro Land wird jeweils nur ein aktueller Datensatz gespeichert. Neue Eingaben überschreiben bestehende Werte.
 
-## Verwendete Technologien
+# Verwendete Technologien
 
-# Backend
+## Backend
 	•	Java
 	•	Spring Boot
 	•	Spring Data JPA
 	•	Hibernate
 	•	MySQL
 
-# Frontend
+## Frontend
 	•	React
 	•	Vite
 	•	JavaScript
 	•	CSS
 
-# Weitere Tools
+## Weitere Tools
 	•	Docker
 	•	DBeaver
 	•	VS Code
 
-## Voraussetzungen
+# Voraussetzungen
 
 Folgende Software muss installiert sein:
 	•	Java 17 oder höher
@@ -38,11 +38,11 @@ Folgende Software muss installiert sein:
 	•	Docker
 	•	Git
 
-## Datenbank mit Docker starten
+# Datenbank mit Docker starten
 
 Die MySQL-Datenbank wird über Docker Compose bereitgestellt und enthält bereits initiale Daten.
 
-# Starten der Datenbank
+## Starten der Datenbank
 
 Im Projektverzeichnis ausführen:
 
@@ -50,7 +50,7 @@ docker compose up -d
 
 Beim ersten Start wird die Datenbank automatisch mit den enthaltenen CO2-Daten befüllt.
 
-# Stoppen der Datenbank
+## Stoppen der Datenbank
 
 docker compose down
 
@@ -66,7 +66,7 @@ database/init.sql
 
 Diese wird automatisch beim ersten Start ausgeführt.
 
-# Datenbankkonfiguration
+## Datenbankkonfiguration
 
 Die Verbindung wird im Backend in folgender Datei definiert:
 
@@ -81,7 +81,7 @@ spring.datasource.password=co2pass
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
 
-# Backend starten
+## Backend starten
 
 cd backend
 ./mvnw spring-boot:run
@@ -102,7 +102,7 @@ Das Frontend ist danach erreichbar unter:
 
 http://localhost:5173
 
-## Testen der Anwendung
+# Testen der Anwendung
 	1.	Über das Frontend
 
 Folgende Funktionen können getestet werden:
@@ -126,7 +126,7 @@ Beispiel-Endpunkte:
 	•	POST /emissions
 	•	GET /emissions/{country}
 
-## Beispielablauf
+# Beispielablauf
 	1.	Docker-Container starten
 	2.	Backend starten
 	3.	Frontend starten
