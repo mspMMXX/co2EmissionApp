@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  mysql:
+    image: mysql:8
+    container_name: co2-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: co2rootpass
+      MYSQL_DATABASE: co2-mysql
+      MYSQL_USER: co2user
+      MYSQL_PASSWORD: co2pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
